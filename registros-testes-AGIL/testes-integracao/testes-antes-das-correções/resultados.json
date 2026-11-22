@@ -1,0 +1,1378 @@
+[
+  {
+    "id": "IT01",
+    "modulo": "Gestor",
+    "descricao": "Cadastrar gestor pela tela de cadastro",
+    "esperado": "Alerta de sucesso, POST /gestores 201, gestor gravado no banco com senha criptografada",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "POST /gestores retornou 201 (esperado 201)"
+      },
+      {
+        "ok": true,
+        "texto": "alerta exibido: alert: Cadastro realizado com sucesso!"
+      },
+      {
+        "ok": true,
+        "texto": "redirecionou para /login"
+      },
+      {
+        "ok": true,
+        "texto": "banco: [\"Atena Souza\",\"atena@clinicavida.com\",\"12.345.678/0001-90\",\"$2a$\"]"
+      },
+      {
+        "ok": true,
+        "texto": "senha gravada com hash BCrypt"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: Atena Souza / atena@clinicavida.com / 12.345.678/0001-90",
+    "print": "IT01_Cadastrar_gestor_pela_tela_de_cadastro.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/gestores",
+        "status": 201,
+        "envio": "{\"nome\":\"Atena Souza\",\"email\":\"atena@clinicavida.com\",\"cnpj\":\"12.345.678/0001-90\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\",\"senha\":\"senha123\",\"confirmacaoSenha\":\"senha123\"}",
+        "resposta": "{\"cnpj\":\"12.345.678/0001-90\",\"email\":\"atena@clinicavida.com\",\"foto\":null,\"id\":1,\"nome\":\"Atena Souza\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\"}"
+      }
+    ],
+    "dialogos": [
+      "alert: Cadastro realizado com sucesso!"
+    ],
+    "urlFinal": "/login"
+  },
+  {
+    "id": "IT02",
+    "modulo": "Gestor",
+    "descricao": "Cadastrar segundo gestor",
+    "esperado": "Gestor B gravado no banco (usado no teste de isolamento)",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "POST /gestores 201"
+      },
+      {
+        "ok": true,
+        "texto": "banco possui 2 gestores"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "gestores no banco: 2",
+    "print": "IT02_Cadastrar_segundo_gestor.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/gestores",
+        "status": 201,
+        "envio": "{\"nome\":\"Bruno Lima\",\"email\":\"bruno@clinicasaude.com\",\"cnpj\":\"98.765.432/0001-10\",\"nomeEmpresa\":\"Clínica Saúde\",\"razaoSocial\":\"Clínica Saúde ME\",\"senha\":\"senha456\",\"confirmacaoSenha\":\"senha456\"}",
+        "resposta": "{\"cnpj\":\"98.765.432/0001-10\",\"email\":\"bruno@clinicasaude.com\",\"foto\":null,\"id\":2,\"nome\":\"Bruno Lima\",\"nomeEmpresa\":\"Clínica Saúde\",\"razaoSocial\":\"Clínica Saúde ME\"}"
+      }
+    ],
+    "dialogos": [
+      "alert: Cadastro realizado com sucesso!"
+    ],
+    "urlFinal": "/login"
+  },
+  {
+    "id": "IT03",
+    "modulo": "Gestor",
+    "descricao": "Cadastrar gestor com e-mail ja existente",
+    "esperado": "POST 409, tela mostra a mensagem do backend, nada é gravado",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "POST /gestores retornou 409 (esperado 409)"
+      },
+      {
+        "ok": true,
+        "texto": "mensagem exibida ao usuário: alert: Este e-mail já está cadastrado no sistema."
+      },
+      {
+        "ok": true,
+        "texto": "banco continua com 2 gestores"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "alert: Este e-mail já está cadastrado no sistema.",
+    "print": "IT03_Cadastrar_gestor_com_e_mail_ja_existente.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/gestores",
+        "status": 409,
+        "envio": "{\"nome\":\"Atena Souza\",\"email\":\"atena@clinicavida.com\",\"cnpj\":\"11.111.111/0001-11\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\",\"senha\":\"senha123\",\"confirmacaoSenha\":\"senha123\"}",
+        "resposta": "{\"erro\":\"Este e-mail já está cadastrado no sistema.\"}"
+      }
+    ],
+    "dialogos": [
+      "alert: Este e-mail já está cadastrado no sistema."
+    ],
+    "urlFinal": "/cadastro"
+  },
+  {
+    "id": "IT04",
+    "modulo": "Gestor",
+    "descricao": "Cadastrar gestor com senhas diferentes",
+    "esperado": "Tela bloqueia antes de chamar a API",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "nenhuma requisição enviada"
+      },
+      {
+        "ok": true,
+        "texto": "alerta: alert: As senhas não coincidem!"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "alert: As senhas não coincidem!",
+    "print": "IT04_Cadastrar_gestor_com_senhas_diferentes.png",
+    "rede": [],
+    "dialogos": [
+      "alert: As senhas não coincidem!"
+    ],
+    "urlFinal": "/cadastro"
+  },
+  {
+    "id": "IT05",
+    "modulo": "Autenticação",
+    "descricao": "Login com senha incorreta",
+    "esperado": "Mensagem de erro na tela e nenhuma sessão criada",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "login gestor 401"
+      },
+      {
+        "ok": false,
+        "texto": "login funcionário 400 (esperado 401)"
+      },
+      {
+        "ok": true,
+        "texto": "permaneceu em /login"
+      },
+      {
+        "ok": true,
+        "texto": "mensagem na tela: \"E-mail ou senha inválidos.\""
+      },
+      {
+        "ok": true,
+        "texto": "sessionStorage sem usuário"
+      }
+    ],
+    "status": "Reprovado",
+    "erro": null,
+    "obtido": "E-mail ou senha inválidos.",
+    "print": "IT05_Login_com_senha_incorreta.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 401,
+        "envio": "{\"email\":\"atena@clinicavida.com\",\"senha\":\"errada999\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "POST",
+        "url": "/auth/login/funcionario",
+        "status": 400,
+        "envio": "{\"email\":\"atena@clinicavida.com\",\"senha\":\"errada999\"}",
+        "resposta": "{\"erro\":\"E-mail ou senha inválidos.\"}"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/login"
+  },
+  {
+    "id": "IT06",
+    "modulo": "Autenticação",
+    "descricao": "Login do gestor com credenciais validas",
+    "esperado": "POST 200, vai para /inicio, sessão com o id do banco",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "login gestor 200"
+      },
+      {
+        "ok": true,
+        "texto": "URL final http://localhost:5173/inicio"
+      },
+      {
+        "ok": true,
+        "texto": "id na sessão (1) = id no banco (1)"
+      },
+      {
+        "ok": true,
+        "texto": "sessão não guarda a senha"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "gestorLogado.id=1",
+    "print": "IT06_Login_do_gestor_com_credenciais_validas.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 200,
+        "envio": "{\"email\":\"atena@clinicavida.com\",\"senha\":\"senha123\"}",
+        "resposta": "{\"cnpj\":\"12.345.678/0001-90\",\"email\":\"atena@clinicavida.com\",\"foto\":null,\"id\":1,\"nome\":\"Atena Souza\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\"}"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/inicio"
+  },
+  {
+    "id": "IT07",
+    "modulo": "Funcionário",
+    "descricao": "Cadastrar funcionario em Gerenciar Funcionarios",
+    "esperado": "POST 201, aparece na lista, gravado no banco vinculado ao gestor logado",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "POST /funcionarios 201"
+      },
+      {
+        "ok": true,
+        "texto": "funcionário aparece na lista"
+      },
+      {
+        "ok": true,
+        "texto": "banco: vinculado a atena@clinicavida.com"
+      },
+      {
+        "ok": true,
+        "texto": "foto gravada no banco"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: Marina Alves / Enfermeira / atena@clinicavida.com / 1",
+    "print": "IT07_Cadastrar_funcionario_em_Gerenciar_Funcionarios.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "POST",
+        "url": "/funcionarios",
+        "status": 201,
+        "envio": "{\"nome\":\"Marina Alves\",\"email\":\"marina@clinicavida.com\",\"cargo\":\"Enfermeira\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"senha\":\"func123\",\"confirmacaoSenha\":\"func123\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/gerenciar-funcionarios"
+  },
+  {
+    "id": "IT08",
+    "modulo": "Funcionário",
+    "descricao": "Cadastrar funcionario com e-mail ja existente",
+    "esperado": "POST 409 e mensagem de erro clara na tela",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "POST /funcionarios 409"
+      },
+      {
+        "ok": true,
+        "texto": "mensagem: \"{\"erro\":\"Este e-mail já está cadastrado no sistema.\"}\""
+      },
+      {
+        "ok": false,
+        "texto": "mensagem legível (não é JSON cru)"
+      },
+      {
+        "ok": true,
+        "texto": "banco continua com 1 funcionário"
+      }
+    ],
+    "status": "Reprovado",
+    "erro": null,
+    "obtido": "{\"erro\":\"Este e-mail já está cadastrado no sistema.\"}",
+    "print": "IT08_Cadastrar_funcionario_com_e_mail_ja_existente.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/funcionarios",
+        "status": 409,
+        "envio": "{\"nome\":\"Outra Pessoa\",\"email\":\"marina@clinicavida.com\",\"cargo\":\"Auxiliar\",\"foto\":null,\"gestorId\":1,\"senha\":\"abc123\",\"confirmacaoSenha\":\"abc123\"}",
+        "resposta": "{\"erro\":\"Este e-mail já está cadastrado no sistema.\"}"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/gerenciar-funcionarios"
+  },
+  {
+    "id": "IT09",
+    "modulo": "Funcionário",
+    "descricao": "Editar cargo do funcionario",
+    "esperado": "PUT 200, lista atualizada, banco atualizado",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "PUT 200"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra novo cargo"
+      },
+      {
+        "ok": true,
+        "texto": "banco: Enfermeira Chefe"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: Enfermeira Chefe",
+    "print": "IT09_Editar_cargo_do_funcionario.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "PUT",
+        "url": "/funcionarios/1",
+        "status": 200,
+        "envio": "{\"nome\":\"Marina Alves\",\"email\":\"marina@clinicavida.com\",\"cargo\":\"Enfermeira Chefe\",\"foto\":\"data:image/...(base64)\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/gerenciar-funcionarios"
+  },
+  {
+    "id": "IT10",
+    "modulo": "Produtos",
+    "descricao": "Cadastrar produto com imagem",
+    "esperado": "POST 201, aparece em Produtos, banco com imagem e histórico de Entrada",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "POST /produtos 201"
+      },
+      {
+        "ok": true,
+        "texto": "redirecionou para /produtos"
+      },
+      {
+        "ok": true,
+        "texto": "produto listado na tela"
+      },
+      {
+        "ok": true,
+        "texto": "banco: Luvas Cirúrgicas / 45.90 / 10 / 100 / atena@clinicavida.com"
+      },
+      {
+        "ok": true,
+        "texto": "imagem gravada no banco"
+      },
+      {
+        "ok": true,
+        "texto": "histórico: Entrada 1000"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: Luvas Cirúrgicas / 45.90 / 10 / 100 / atena@clinicavida.com | histórico: Entrada 1000",
+    "print": "IT10_Cadastrar_produto_com_imagem.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "POST",
+        "url": "/produtos",
+        "status": 201,
+        "envio": "{\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.9,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.90,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.90,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/produtos"
+  },
+  {
+    "id": "IT11",
+    "modulo": "Produtos",
+    "descricao": "Cadastrar produto com preco negativo",
+    "esperado": "Tela bloqueia o envio e nada é gravado",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "nenhum POST enviado"
+      },
+      {
+        "ok": true,
+        "texto": "validação: \"O valor deve ser maior ou igual a 0.\""
+      },
+      {
+        "ok": true,
+        "texto": "banco com 1 produto"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "validação do navegador: \"O valor deve ser maior ou igual a 0.\"",
+    "print": "IT11_Cadastrar_produto_com_preco_negativo.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.90,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.90,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/cadastrar-produto"
+  },
+  {
+    "id": "IT12",
+    "modulo": "Produtos",
+    "descricao": "Editar produto reduzindo o estoque",
+    "esperado": "PUT 200, banco atualizado, histórico de Saída e notificação de estoque baixo",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "PUT /produtos 200"
+      },
+      {
+        "ok": true,
+        "texto": "banco: preço 49.90, caixas 1"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra R$ 49,90"
+      },
+      {
+        "ok": true,
+        "texto": "histórico: Entrada 1000, Saída 900"
+      },
+      {
+        "ok": true,
+        "texto": "notificação: ESTOQUE_BAIXO 0 1"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: 49.90 / 1 | histórico: Entrada 1000, Saída 900 | notificação: ESTOQUE_BAIXO",
+    "print": "IT12_Editar_produto_reduzindo_o_estoque.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.90,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":45.90,\"estoqueCaixas\":10,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "PUT",
+        "url": "/produtos/1?gestorId=1",
+        "status": 200,
+        "envio": "{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.9,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/produtos"
+  },
+  {
+    "id": "IT13",
+    "modulo": "Histórico",
+    "descricao": "Historico exibe as movimentacoes do banco",
+    "esperado": "GET /historico 200 e a tela mostra Entrada e Saída",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "GET /historico 200"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra Entrada"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra Saída"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra o produto"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "registros no banco: 2",
+    "print": "IT13_Historico_exibe_as_movimentacoes_do_banco.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/historico?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":2,\"produto\":\"Luvas Cirúrgicas\",\"tipo\":\"Saída\",\"quantidade\":900,\"unidade\":\"un.\",\"data\":\"2026-11-22T18:01:16\",\"gestorId\":1},{\"id\":1,\"produto\":\"Luvas Cirúrgicas\",\"tipo\":\"Entrada\",\"quantidade\":1000,\"unidade\":\"un.\",\"data\":\"2026-11-22T18:01:09\",\"gestorId\":1}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/historico?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":2,\"produto\":\"Luvas Cirúrgicas\",\"tipo\":\"Saída\",\"quantidade\":900,\"unidade\":\"un.\",\"data\":\"2026-11-22T18:01:16\",\"gestorId\":1},{\"id\":1,\"produto\":\"Luvas Cirúrgicas\",\"tipo\":\"Entrada\",\"quantidade\":1000,\"unidade\":\"un.\",\"data\":\"2026-11-22T18:01:09\",\"gestorId\":1}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/historico"
+  },
+  {
+    "id": "IT14",
+    "modulo": "Notificações",
+    "descricao": "Marcar notificacao de estoque baixo como lida",
+    "esperado": "Notificação aparece, PATCH 204 e banco com lida=1",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "GET /notificacoes 200"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra \"Estoque baixo\""
+      },
+      {
+        "ok": true,
+        "texto": "PATCH /lida 204"
+      },
+      {
+        "ok": true,
+        "texto": "banco: lida=1"
+      },
+      {
+        "ok": true,
+        "texto": "tela mostra \"Lida\""
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: lida=1",
+    "print": "IT14_Marcar_notificacao_de_estoque_baixo_como_lida.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/notificacoes?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"produtoId\":1,\"titulo\":\"Estoque baixo\",\"mensagem\":\"O produto Luvas Cirúrgicas possui apenas 100 unidades disponíveis. O limite de alerta é 150 unidades.\",\"tipo\":\"ESTOQUE_BAIXO\",\"data\":\"2026-11-22T18:01:16\",\"lida\":false}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/notificacoes?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"produtoId\":1,\"titulo\":\"Estoque baixo\",\"mensagem\":\"O produto Luvas Cirúrgicas possui apenas 100 unidades disponíveis. O limite de alerta é 150 unidades.\",\"tipo\":\"ESTOQUE_BAIXO\",\"data\":\"2026-11-22T18:01:16\",\"lida\":false}]"
+      },
+      {
+        "metodo": "PATCH",
+        "url": "/notificacoes/1/lida",
+        "status": 204,
+        "envio": "",
+        "resposta": ""
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/notificacoes"
+  },
+  {
+    "id": "IT15",
+    "modulo": "Início",
+    "descricao": "Pagina inicial carrega produtos e funcionarios do banco",
+    "esperado": "Tela inicial lista os dados do gestor logado",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "GET /produtos 200"
+      },
+      {
+        "ok": true,
+        "texto": "GET /funcionarios 200"
+      },
+      {
+        "ok": true,
+        "texto": "mostra o produto"
+      },
+      {
+        "ok": true,
+        "texto": "mostra o funcionário"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "produto e funcionário exibidos",
+    "print": "IT15_Pagina_inicial_carrega_produtos_e_funcionarios_do_.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/inicio"
+  },
+  {
+    "id": "IT16",
+    "modulo": "Gestor",
+    "descricao": "Editar nome no perfil do gestor",
+    "esperado": "PUT 200, banco e sessão atualizados",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "PUT /gestores 200"
+      },
+      {
+        "ok": true,
+        "texto": "banco: Atena Souza Ramos"
+      },
+      {
+        "ok": true,
+        "texto": "sessão atualizada"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "banco: Atena Souza Ramos",
+    "print": "IT16_Editar_nome_no_perfil_do_gestor.png",
+    "rede": [
+      {
+        "metodo": "PUT",
+        "url": "/gestores/1",
+        "status": 200,
+        "envio": "{\"nome\":\"Atena Souza Ramos\",\"email\":\"atena@clinicavida.com\",\"foto\":null}",
+        "resposta": "{\"cnpj\":\"12.345.678/0001-90\",\"email\":\"atena@clinicavida.com\",\"foto\":null,\"id\":1,\"nome\":\"Atena Souza Ramos\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\"}"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/perfil-gestor"
+  },
+  {
+    "id": "IT17",
+    "modulo": "Gestor",
+    "descricao": "Excluir conta de gestor que possui funcionarios",
+    "esperado": "DELETE 409, conta mantida no banco e motivo explicado na tela",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "DELETE /gestores 409"
+      },
+      {
+        "ok": true,
+        "texto": "gestor continua no banco"
+      },
+      {
+        "ok": true,
+        "texto": "continua logado no perfil"
+      },
+      {
+        "ok": false,
+        "texto": "mensagem na tela explica o motivo: \"Não foi possível excluir a conta.\""
+      }
+    ],
+    "status": "Reprovado",
+    "erro": null,
+    "obtido": "mensagem: \"Não foi possível excluir a conta.\" | resposta da API: ",
+    "print": "IT17_Excluir_conta_de_gestor_que_possui_funcionarios.png",
+    "rede": [
+      {
+        "metodo": "DELETE",
+        "url": "/gestores/1",
+        "status": 409,
+        "envio": "",
+        "resposta": ""
+      }
+    ],
+    "dialogos": [
+      "confirm: Tem certeza que deseja excluir sua conta? Essa ação não poderá ser desfeita."
+    ],
+    "urlFinal": "/perfil-gestor"
+  },
+  {
+    "id": "IT18",
+    "modulo": "Autenticação",
+    "descricao": "Sair da conta do gestor",
+    "esperado": "Sessão limpa e volta para /login",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "voltou para /login"
+      },
+      {
+        "ok": true,
+        "texto": "sessão do gestor removida"
+      },
+      {
+        "ok": true,
+        "texto": "página restrita bloqueada após sair"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "sessão encerrada",
+    "print": "IT18_Sair_da_conta_do_gestor.png",
+    "rede": [],
+    "dialogos": [],
+    "urlFinal": "/gerenciar-funcionarios"
+  },
+  {
+    "id": "IT19",
+    "modulo": "Autenticação",
+    "descricao": "Login do funcionario e permissoes na tela",
+    "esperado": "Login 200 e funcionário vê os produtos do seu gestor, sem botões de gestor",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "login funcionário 200"
+      },
+      {
+        "ok": true,
+        "texto": "tipoUsuario = funcionario"
+      },
+      {
+        "ok": true,
+        "texto": "vê os produtos do gestor"
+      },
+      {
+        "ok": true,
+        "texto": "sem botão excluir"
+      },
+      {
+        "ok": true,
+        "texto": "sem botão adicionar"
+      },
+      {
+        "ok": true,
+        "texto": "sem \"marcar como lida\""
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "permissões de funcionário respeitadas",
+    "print": "IT19_Login_do_funcionario_e_permissoes_na_tela.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 401,
+        "envio": "{\"email\":\"marina@clinicavida.com\",\"senha\":\"func123\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "POST",
+        "url": "/auth/login/funcionario",
+        "status": 200,
+        "envio": "{\"email\":\"marina@clinicavida.com\",\"senha\":\"func123\"}",
+        "resposta": "{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/notificacoes?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"produtoId\":1,\"titulo\":\"Estoque baixo\",\"mensagem\":\"O produto Luvas Cirúrgicas possui apenas 100 unidades disponíveis. O limite de alerta é 150 unidades.\",\"tipo\":\"ESTOQUE_BAIXO\",\"data\":\"2026-11-22T18:01:16\",\"lida\":true}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/notificacoes?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"produtoId\":1,\"titulo\":\"Estoque baixo\",\"mensagem\":\"O produto Luvas Cirúrgicas possui apenas 100 unidades disponíveis. O limite de alerta é 150 unidades.\",\"tipo\":\"ESTOQUE_BAIXO\",\"data\":\"2026-11-22T18:01:16\",\"lida\":true}]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/notificacoes"
+  },
+  {
+    "id": "IT20",
+    "modulo": "Produtos",
+    "descricao": "Isolamento: gestor B nao ve dados do gestor A",
+    "esperado": "Listas de produtos e funcionários do gestor B vazias",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "produto do gestor A não aparece"
+      },
+      {
+        "ok": true,
+        "texto": "funcionário do gestor A não aparece"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "sem vazamento entre gestores",
+    "print": "IT20_Isolamento_gestor_B_nao_ve_dados_do_gestor_A.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 200,
+        "envio": "{\"email\":\"bruno@clinicasaude.com\",\"senha\":\"senha456\"}",
+        "resposta": "{\"cnpj\":\"98.765.432/0001-10\",\"email\":\"bruno@clinicasaude.com\",\"foto\":null,\"id\":2,\"nome\":\"Bruno Lima\",\"nomeEmpresa\":\"Clínica Saúde\",\"razaoSocial\":\"Clínica Saúde ME\"}"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=2",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/funcionarios"
+  },
+  {
+    "id": "IT21",
+    "modulo": "Gestor",
+    "descricao": "Excluir conta de gestor sem funcionarios",
+    "esperado": "DELETE 200, removido do banco e volta para /login",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "DELETE /gestores 200"
+      },
+      {
+        "ok": true,
+        "texto": "removido do banco"
+      },
+      {
+        "ok": true,
+        "texto": "redirecionou para /login"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "gestores restantes: 1",
+    "print": "IT21_Excluir_conta_de_gestor_sem_funcionarios.png",
+    "rede": [
+      {
+        "metodo": "DELETE",
+        "url": "/gestores/2",
+        "status": 200,
+        "envio": "",
+        "resposta": ""
+      }
+    ],
+    "dialogos": [
+      "confirm: Tem certeza que deseja excluir sua conta? Essa ação não poderá ser desfeita."
+    ],
+    "urlFinal": "/login"
+  },
+  {
+    "id": "IT22",
+    "modulo": "Produtos",
+    "descricao": "Excluir produto",
+    "esperado": "DELETE 204, some da tela e do banco",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "DELETE /produtos 204"
+      },
+      {
+        "ok": true,
+        "texto": "removido do banco"
+      },
+      {
+        "ok": true,
+        "texto": "não aparece após recarregar"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "produtos no banco: 0",
+    "print": "IT22_Excluir_produto.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 200,
+        "envio": "{\"email\":\"atena@clinicavida.com\",\"senha\":\"senha123\"}",
+        "resposta": "{\"cnpj\":\"12.345.678/0001-90\",\"email\":\"atena@clinicavida.com\",\"foto\":null,\"id\":1,\"nome\":\"Atena Souza Ramos\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\"}"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"id\":1,\"nome\":\"Luvas Cirúrgicas\",\"preco\":49.90,\"estoqueCaixas\":1,\"qtdPorCaixa\":100,\"gestorId\":1,\"imagem\":\"data:image/...(base64)\"}]"
+      },
+      {
+        "metodo": "DELETE",
+        "url": "/produtos/1?gestorId=1",
+        "status": 204,
+        "envio": "",
+        "resposta": ""
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      }
+    ],
+    "dialogos": [
+      "confirm: Tem certeza que deseja excluir o produto \"Luvas Cirúrgicas\"?"
+    ],
+    "urlFinal": "/produtos"
+  },
+  {
+    "id": "IT23",
+    "modulo": "Funcionário",
+    "descricao": "Excluir funcionario",
+    "esperado": "DELETE 204, some da lista e do banco",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "DELETE /funcionarios 204"
+      },
+      {
+        "ok": true,
+        "texto": "removido do banco"
+      },
+      {
+        "ok": true,
+        "texto": "some da lista"
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "funcionários no banco: 0",
+    "print": "IT23_Excluir_funcionario.png",
+    "rede": [
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[{\"cargo\":\"Enfermeira Chefe\",\"email\":\"marina@clinicavida.com\",\"foto\":\"data:image/...(base64)\",\"gestorId\":1,\"id\":1,\"nome\":\"Marina Alves\",\"nomeEmpresa\":\"Clínica Vida\"}]"
+      },
+      {
+        "metodo": "DELETE",
+        "url": "/funcionarios/1",
+        "status": 204,
+        "envio": "",
+        "resposta": ""
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      }
+    ],
+    "dialogos": [
+      "confirm: Tem certeza que deseja excluir este funcionário?"
+    ],
+    "urlFinal": "/gerenciar-funcionarios"
+  },
+  {
+    "id": "IT24",
+    "modulo": "Login",
+    "descricao": "Funcionario excluido nao consegue mais entrar",
+    "esperado": "Login retorna 401 e mensagem na tela",
+    "verificacoes": [
+      {
+        "ok": false,
+        "texto": "login funcionário 400 (esperado 401)"
+      },
+      {
+        "ok": true,
+        "texto": "permanece em /login"
+      }
+    ],
+    "status": "Reprovado",
+    "erro": null,
+    "obtido": "E-mail ou senha inválidos.",
+    "print": "IT24_Funcionario_excluido_nao_consegue_mais_entrar.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 401,
+        "envio": "{\"email\":\"marina@clinicavida.com\",\"senha\":\"func123\"}",
+        "resposta": ""
+      },
+      {
+        "metodo": "POST",
+        "url": "/auth/login/funcionario",
+        "status": 400,
+        "envio": "{\"email\":\"marina@clinicavida.com\",\"senha\":\"func123\"}",
+        "resposta": "{\"erro\":\"E-mail ou senha inválidos.\"}"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/login"
+  },
+  {
+    "id": "IT25",
+    "modulo": "Resiliência",
+    "descricao": "Backend fora do ar",
+    "esperado": "Login e Produtos avisam o usuário que não há conexão",
+    "verificacoes": [
+      {
+        "ok": true,
+        "texto": "login mostra: \"Failed to fetch\""
+      },
+      {
+        "ok": true,
+        "texto": "produtos mostra: \"Não foi possível conectar à API. Exibindo os dados salvos localmente.\""
+      }
+    ],
+    "status": "Aprovado",
+    "erro": null,
+    "obtido": "login: \"Failed to fetch\" | produtos: \"Não foi possível conectar à API. Exibindo os dados salvos localmente.\"",
+    "print": "IT25_Backend_fora_do_ar.png",
+    "rede": [
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": "FALHOU",
+        "envio": "",
+        "resposta": "net::ERR_CONNECTION_REFUSED"
+      },
+      {
+        "metodo": "POST",
+        "url": "/auth/login/gestor",
+        "status": 200,
+        "envio": "{\"email\":\"atena@clinicavida.com\",\"senha\":\"senha123\"}",
+        "resposta": "{\"cnpj\":\"12.345.678/0001-90\",\"email\":\"atena@clinicavida.com\",\"foto\":null,\"id\":1,\"nome\":\"Atena Souza Ramos\",\"nomeEmpresa\":\"Clínica Vida\",\"razaoSocial\":\"Clínica Vida LTDA\"}"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/funcionarios?gestorId=1",
+        "status": 200,
+        "envio": "",
+        "resposta": "[]"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": "FALHOU",
+        "envio": "",
+        "resposta": "net::ERR_CONNECTION_REFUSED"
+      },
+      {
+        "metodo": "GET",
+        "url": "/produtos?gestorId=1",
+        "status": "FALHOU",
+        "envio": "",
+        "resposta": "net::ERR_CONNECTION_REFUSED"
+      }
+    ],
+    "dialogos": [],
+    "urlFinal": "/produtos"
+  }
+]
