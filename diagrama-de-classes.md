@@ -23,7 +23,6 @@ classDiagram
         -String emailFuncionario
         -String nomeFuncionario
         -String senhaFuncionario
-        -String fotoUrl
         -String foto
     }
 
